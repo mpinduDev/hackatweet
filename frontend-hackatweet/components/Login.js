@@ -5,14 +5,12 @@ import { faTwitter } from '@fortawesome/free-brands-svg-icons';
 function Login() {
   return (
     <div className={styles.container}>
-      <div className={styles.leftSection}></div>
+      <div className={styles.leftSection}>
+        + <FontAwesomeIcon icon={faTwitter} className={styles.bigLogo} />
+      </div>
 
       <div className={styles.rightSection}>
-        <FontAwesomeIcon
-          icon={faTwitter}
-          flip='horizontal'
-          className={styles.logo}
-        />
+        <FontAwesomeIcon icon={faTwitter} className={styles.logo} />
 
         <h1 className={styles.title}>See what's happening</h1>
         <h2 className={styles.subtitle}>Join Hackatweet today.</h2>

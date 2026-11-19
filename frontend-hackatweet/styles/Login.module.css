@@ -5,9 +5,18 @@
 
 .leftSection {
   width: 40%;
-  background-image: url('/images/background.png');
+  background-image: url('/images/background.jpg');
   background-size: cover;
   background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bigLogo {
+  font-size: 250px;
+  color: #ffffff;
+  transform: rotate(180deg);
 }
 
 .rightSection {
@@ -21,6 +30,7 @@
 .logo {
   font-size: 60px;
   color: #ffffff;
+  transform: rotate(180deg);
 }
 
 .title {
