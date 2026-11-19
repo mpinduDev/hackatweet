@@ -1,0 +1,40 @@
+.tweet {
+  padding: 1.5rem 1.5rem 1.2rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.details {
+  color: var(--muted);
+}
+
+.content {
+  margin-bottom: 1rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.95rem;
+}
+
+.action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+}
+
+.firstname {
+  font-family: 'Mont-Heavy', 'Montserrat', Verdana, sans-serif;
+  font-weight: 900;
+}
