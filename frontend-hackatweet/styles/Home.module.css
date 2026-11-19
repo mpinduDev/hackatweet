@@ -159,3 +159,12 @@
   font-family: 'Mont-Heavy', 'Montserrat', Verdana, sans-serif;
   font-weight: 900;
 }
+
+.tweetButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.counterMax {
+  color: var(--danger);
+}

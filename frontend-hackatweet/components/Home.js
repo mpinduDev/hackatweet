@@ -3,9 +3,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTwitter } from '@fortawesome/free-brands-svg-icons';
 import Avatar from './Avatar';
 import Tweet from './Tweet';
+import { useState } from 'react';
 
 const user = { firstname: 'John', username: 'JohnCena' };
-const tweets = [
+const initialTweets = [
   {
     id: 3,
     author: { firstname: 'John', username: 'JohnCena' },
@@ -30,6 +31,24 @@ const tweets = [
 ];
 
 function Home() {
+  const [tweets, setTweets] = useState(initialTweets);
+  const [newTweet, setNewTweet] = useState('');
+
+  const handleTweet = () => {
+    const content = newTweet.trim();
+    if (!content) return;
+
+    const tweet = {
+      id: Date.now(),
+      author: user,
+      content,
+      createdAt: Date.now(),
+      likes: [],
+    };
+
+    setTweets([tweet, ...tweets]);
+    setNewTweet('');
+  };
   return (
     <div className={styles.main}>
       <aside className={styles.leftColumn}>
@@ -55,10 +74,29 @@ function Home() {
         <h2 className={styles.columnTitle}>Accueil</h2>
 
         <div className={styles.newTweet}>
-          <textarea className={styles.textarea} placeholder='Quoi de neuf ?' />
+          <textarea
+            className={styles.textarea}
+            placeholder='Quoi de neuf ?'
+            maxLength={280}
+            value={newTweet}
+            onChange={(e) => setNewTweet(e.target.value)}
+          />
           <div className={styles.newTweetFooter}>
-            <span className={styles.counter}>0/280</span>
-            <button type='button' className={styles.tweetButton}>
+            <span
+              className={
+                newTweet.length === 280
+                  ? `${styles.counter} ${styles.counterMax}`
+                  : styles.counter
+              }
+            >
+              {newTweet.length}/280
+            </span>
+            <button
+              type='button'
+              className={styles.tweetButton}
+              onClick={handleTweet}
+              disabled={!newTweet.trim()}
+            >
               Tweeter
             </button>
           </div>
