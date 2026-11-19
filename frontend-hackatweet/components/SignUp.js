@@ -3,46 +3,96 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTwitter } from '@fortawesome/free-brands-svg-icons';
 import styles from '../styles/Auth.module.css';
 
-function SignUp() {
+function SignUp({ onSuccess, onSwitch }) {
   const [firstname, setFirstname] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState({});
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const newErrors = {};
+    if (!firstname.trim()) newErrors.firstname = 'Le prénom est obligatoire.';
+    if (!username.trim())
+      newErrors.username = "Le nom d'utilisateur est obligatoire.";
+    if (password.length < 6)
+      newErrors.password =
+        'Le mot de passe doit contenir au moins 6 caractères.';
+
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) return;
+
+    // Plus tard : fetch('http://localhost:3000/users/signup', { method: 'POST', ... })
     console.log('Sign up :', firstname, username);
+    setFirstname('');
+    setUsername('');
+    setPassword('');
+    onSuccess();
   };
+  const fieldClass = (name) =>
+    errors[name] ? `${styles.field} ${styles.invalid}` : styles.field;
 
   return (
-    <div className={styles.container}>
-      <FontAwesomeIcon icon={faTwitter} className={styles.logo} />
-      <h3 className={styles.title}>Create your Hackatweet account</h3>
-
-      <input
-        type='text'
-        placeholder='Firstname'
-        className={styles.input}
-        value={firstname}
-        onChange={(e) => setFirstname(e.target.value)}
-      />
-      <input
-        type='text'
-        placeholder='Username'
-        className={styles.input}
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-      />
-      <input
-        type='password'
-        placeholder='Password'
-        className={styles.input}
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-
-      <button className={styles.button} onClick={handleSubmit}>
-        Sign up
-      </button>
-    </div>
+    <>
+      <span className={styles.logo}>
+        <FontAwesomeIcon icon={faTwitter} />
+      </span>
+      <h3 className={styles.title}>Créez votre compte Hackatweet</h3>
+      <form className={styles.form} onSubmit={handleSubmit} noValidate>
+        <div>
+          <div className={fieldClass('firstname')}>
+            <input
+              type='text'
+              placeholder='Prénom'
+              autoComplete='given-name'
+              value={firstname}
+              onChange={(e) => setFirstname(e.target.value)}
+            />
+          </div>
+          <p className={styles.error}>{errors.firstname}</p>
+        </div>
+        <div>
+          <div className={fieldClass('username')}>
+            <input
+              type='text'
+              placeholder="Nom d'utilisateur"
+              autoComplete='username'
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          </div>
+          <p className={styles.error}>{errors.username}</p>
+        </div>
+        <div>
+          <div className={fieldClass('password')}>
+            <input
+              type='password'
+              placeholder='Mot de passe'
+              autoComplete='new-password'
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+          <p className={styles.error}>{errors.password}</p>
+        </div>
+        <button className={styles.submit} type='submit'>
+          S&rsquo;inscrire
+        </button>
+      </form>
+      <p className={styles.switch}>
+        Vous avez déjà un compte ?{' '}
+        <a
+          href='#'
+          onClick={(e) => {
+            e.preventDefault();
+            onSwitch();
+          }}
+        >
+          Se connecter
+        </a>
+      </p>
+    </>
   );
 }
 

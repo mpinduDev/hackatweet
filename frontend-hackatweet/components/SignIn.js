@@ -3,38 +3,80 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTwitter } from '@fortawesome/free-brands-svg-icons';
 import styles from '../styles/Auth.module.css';
 
-function SignIn() {
+function SignIn({ onSuccess, onSwitch }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState({});
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const newErrors = {};
+    if (!username.trim())
+      newErrors.username = "Le nom d'utilisateur est obligatoire.";
+    if (!password) newErrors.password = 'Le mot de passe est obligatoire.';
+
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) return;
+
+    // Plus tard : fetch('http://localhost:3000/users/signin', { method: 'POST', ... })
     console.log('Sign in :', username);
+    setUsername('');
+    setPassword('');
+    onSuccess();
   };
+  const fieldClass = (name) =>
+    errors[name] ? `${styles.field} ${styles.invalid}` : styles.field;
 
   return (
-    <div className={styles.container}>
-      <FontAwesomeIcon icon={faTwitter} className={styles.logo} />
-      <h3 className={styles.title}>Connect to Hackatweet</h3>
+    <>
+      <span className={styles.logo}>
+        <FontAwesomeIcon icon={faTwitter} />
+      </span>
+      <h3 className={styles.title}>Connexion à Hackatweet</h3>
 
-      <input
-        type='text'
-        placeholder='Username'
-        className={styles.input}
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-      />
-      <input
-        type='password'
-        placeholder='Password'
-        className={styles.input}
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-
-      <button className={styles.button} onClick={handleSubmit}>
-        Sign in
-      </button>
-    </div>
+      <form className={styles.form} onSubmit={handleSubmit} noValidate>
+        <div>
+          <div className={fieldClass('username')}>
+            <input
+              type='text'
+              placeholder="Nom d'utilisateur"
+              autoComplete='username'
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          </div>
+          <p className={styles.error}>{errors.username}</p>
+        </div>
+        <div>
+          <div className={fieldClass('password')}>
+            <input
+              type='password'
+              placeholder='Mot de passe'
+              autoComplete='current-password'
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+          <p className={styles.error}>{errors.password}</p>
+        </div>
+        <button className={styles.submit} type='submit'>
+          Se connecter
+        </button>
+      </form>
+      <p className={styles.switch}>
+        Pas encore de compte ?{' '}
+        <a
+          href='#'
+          onClick={(e) => {
+            e.preventDefault();
+            onSwitch();
+          }}
+        >
+          S&rsquo;inscrire
+        </a>
+      </p>
+    </>
   );
 }
 
