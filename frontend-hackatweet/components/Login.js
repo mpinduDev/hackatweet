@@ -1,25 +1,92 @@
 import styles from '../styles/Login.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTwitter } from '@fortawesome/free-brands-svg-icons';
+import { useState, useEffect } from 'react';
+import SignUp from './SignUp';
+import SignIn from './SignIn';
 
 function Login() {
+  const [modal, setModal] = useState(null);
+  const closeModal = () => setModal(null);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') closeModal();
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  const handleOverlayClick = (e) => {
+    if (e.target === e.currentTarget) closeModal();
+  };
+
   return (
-    <div className={styles.container}>
-      <div className={styles.leftSection}>
-        + <FontAwesomeIcon icon={faTwitter} className={styles.bigLogo} />
-      </div>
+    <>
+      <main className={styles.main}>
+        <section className={styles.visual}>
+          <span className={styles.logoBig}>
+            <FontAwesomeIcon icon={faTwitter} />
+          </span>
+        </section>
+        <section className={styles.content}>
+          <span className={styles.logoSmall}>
+            <FontAwesomeIcon icon={faTwitter} />
+          </span>
+          <h1 className={styles.title}>
+            Découvrez ce qui
+            <br />
+            se passe
+          </h1>
+          <h2 className={styles.subtitle}>
+            Rejoignez Hackatweet dès aujourd&rsquo;hui.
+          </h2>
+          <div className={styles.actions}>
+            <button
+              type='button'
+              className={`${styles.btn} ${styles.btnBlue}`}
+              onClick={() => setModal('signup')}
+            >
+              S&rsquo;inscrire
+            </button>
+            <p className={styles.already}>Avez-vous déjà un compte ?</p>
+            <button
+              type='button'
+              className={`${styles.btn} ${styles.btnOutline}`}
+              onClick={() => setModal('signin')}
+            >
+              Se connecter
+            </button>
+          </div>
+        </section>
+      </main>
+      {modal && (
+        <div className={styles.overlay} onClick={handleOverlayClick}>
+          <div className={styles.modal} role='dialog' aria-modal='true'>
+            <button
+              type='button'
+              className={styles.close}
+              aria-label='Fermer'
+              onClick={closeModal}
+            >
+              ✕
+            </button>
 
-      <div className={styles.rightSection}>
-        <FontAwesomeIcon icon={faTwitter} className={styles.logo} />
-
-        <h1 className={styles.title}>See what's happening</h1>
-        <h2 className={styles.subtitle}>Join Hackatweet today.</h2>
-
-        <button className={styles.signUpButton}>Sign up</button>
-        <p className={styles.text}>Already have an account?</p>
-        <button className={styles.signInButton}>Sign in</button>
-      </div>
-    </div>
+            {modal === 'signup' ? (
+              <SignUp
+                onSuccess={closeModal}
+                onSwitch={() => setModal('signin')}
+              />
+            ) : (
+              <SignIn
+                onSuccess={closeModal}
+                onSwitch={() => setModal('signup')}
+              />
+            )}
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
