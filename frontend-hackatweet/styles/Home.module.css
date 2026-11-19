@@ -1,22 +1,180 @@
 .main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1.4fr);
+  min-height: 100vh;
+}
+
+/* ---------- Colonne de gauche ---------- */
+.leftColumn {
+  position: sticky;
+  top: 0;
+  height: 100vh;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  padding: 2rem 3.5rem;
+}
+
+.logo {
+  display: inline-flex;
+  width: fit-content;
+  line-height: 1;
+  font-size: 48px;
+  color: var(--text);
+  transform: rotate(120deg);
+}
+
+.user {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.avatar {
+  flex-shrink: 0;
+  display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  padding: 4rem 0;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background-color: #5b93d9;
 }
 
-.title {
-  line-height: 1.15;
-  font-size: 4rem;
+.avatar::after {
+  content: '';
+  width: 45%;
+  height: 60%;
+  background-color: #ffffff;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
 }
 
-.title a {
-  color: #0070f3;
-  text-decoration: none;
+.username {
+  color: var(--muted);
 }
 
-.title a:hover, .title a:focus, .title a:active {
-  text-decoration: underline;
+.logout {
+  padding: 0.35rem 1.4rem;
+  background-color: transparent;
+  color: var(--text);
+  border: 1px solid var(--muted);
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.logout:hover {
+  background-color: var(--surface);
+}
+
+/* ---------- Colonne centrale ---------- */
+.center {
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+}
+
+.columnTitle {
+  padding: 1.5rem 1.5rem 1rem;
+  font-size: 1.6rem;
+}
+
+.newTweet {
+  padding: 0 3rem 2rem 4rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.textarea {
+  width: 100%;
+  min-height: 60px;
+  padding: 0.5rem;
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 1.3rem;
+  resize: vertical;
+  outline: none;
+}
+
+.textarea::placeholder {
+  color: var(--muted);
+}
+
+.textarea:focus {
+  border-bottom-color: var(--blue);
+}
+
+.newTweetFooter {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1.2rem;
+  margin-top: 1.2rem;
+}
+
+.tweetButton {
+  padding: 0.5rem 1.6rem;
+  background-color: var(--blue);
+  color: var(--text);
+  border: none;
+  border-radius: 9999px;
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.tweetButton:hover {
+  background-color: var(--blue-hover);
+}
+
+.empty {
+  padding: 2rem 1.5rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* ---------- Colonne de droite ---------- */
+.rightColumn {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  padding-right: 1rem;
+}
+
+.trendsBox {
+  margin-left: 1.5rem;
+  border-radius: 12px;
+  background-color: var(--surface);
+  overflow: hidden;
+}
+
+.trend {
+  padding: 1rem 1.6rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.trend:hover {
+  background-color: #263241;
+}
+
+.trendName {
+  margin-bottom: 0.4rem;
+}
+
+.trendCount {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+/* ---------- Police de la maquette ---------- */
+.firstname,
+.logout,
+.tweetButton,
+.trendName {
+  font-family: 'Mont-Heavy', 'Montserrat', Verdana, sans-serif;
+  font-weight: 900;
 }
