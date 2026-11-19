@@ -1,3 +1,68 @@
+# ==========================================================
+# Root .gitignore: rules shared by backend and frontend
+# (each sub-project also has its own .gitignore)
+# ==========================================================
+
+# ---------- Dependencies ----------
 node_modules/
+.pnp
+.pnp.js
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+.npm/
+
+# ---------- Environment variables / secrets ----------
 .env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# ---------- Build outputs ----------
+.next/
+out/
+build/
+dist/
+*.tsbuildinfo
+next-env.d.ts
+
+# ---------- Tests ----------
+coverage/
+.nyc_output/
+
+# ---------- Logs ----------
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# ---------- Caches ----------
+.cache/
+.eslintcache
+.turbo/
+.vercel/
+
+# ---------- Runtime ----------
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# ---------- OS ----------
 .DS_Store
+._*
+Thumbs.db
+Desktop.ini
+
+# ---------- Editors / IDE ----------
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+*~
