@@ -23,7 +23,8 @@ function Tweet({
         <p>
           <span className={styles.firstname}>{author.firstname}</span>{' '}
           <span className={styles.details}>
-            @{author.username} · {timeAgo(createdAt)}
+            @{author.username} ·{' '}
+            <span suppressHydrationWarning>{timeAgo(createdAt)}</span>
           </span>
         </p>
       </div>
