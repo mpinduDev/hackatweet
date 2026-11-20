@@ -7,6 +7,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { getTrends, extractHashtags } from '../utils/hashtags';
+import { useSelector, useDispatch } from 'react-redux';
+import { addTweet, toggleLike, deleteTweet } from '../reducers/tweets';
 
 const user = { firstname: 'John', username: 'JohnCena' };
 const initialTweets = [
@@ -35,7 +37,9 @@ const initialTweets = [
 
 function Home({ hashtag }) {
   const router = useRouter();
-  const [tweets, setTweets] = useState(initialTweets);
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.value);
+  const tweets = useSelector((state) => state.tweets.value);
   const [newTweet, setNewTweet] = useState('');
   const [search, setSearch] = useState('');
 
@@ -54,28 +58,16 @@ function Home({ hashtag }) {
       likes: [],
     };
 
-    setTweets([tweet, ...tweets]);
+    dispatch(addTweet(tweet));
     setNewTweet('');
   };
 
   const handleLike = (id) => {
-    setTweets(
-      tweets.map((tweet) => {
-        if (tweet.id !== id) return tweet;
-
-        const isLiked = tweet.likes.includes(user.username);
-        return {
-          ...tweet,
-          likes: isLiked
-            ? tweet.likes.filter((username) => username !== user.username)
-            : [...tweet.likes, user.username],
-        };
-      }),
-    );
+    dispatch(toggleLike({ id, username: user.username }));
   };
 
   const handleDelete = (id) => {
-    setTweets(tweets.filter((tweet) => tweet.id !== id));
+    dispatch(deleteTweet(id));
   };
 
   const handleSearch = (e) => {
