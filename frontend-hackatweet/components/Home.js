@@ -49,6 +49,27 @@ function Home() {
     setTweets([tweet, ...tweets]);
     setNewTweet('');
   };
+
+  const handleLike = (id) => {
+    setTweets(
+      tweets.map((tweet) => {
+        if (tweet.id !== id) return tweet;
+
+        const isLiked = tweet.likes.includes(user.username);
+        return {
+          ...tweet,
+          likes: isLiked
+            ? tweet.likes.filter((username) => username !== user.username)
+            : [...tweet.likes, user.username],
+        };
+      }),
+    );
+  };
+
+  const handleDelete = (id) => {
+    setTweets(tweets.filter((tweet) => tweet.id !== id));
+  };
+
   return (
     <div className={styles.main}>
       <aside className={styles.leftColumn}>
@@ -110,6 +131,9 @@ function Home() {
               key={tweet.id}
               {...tweet}
               isMine={tweet.author.username === user.username}
+              isLiked={tweet.likes.includes(user.username)}
+              onLike={() => handleLike(tweet.id)}
+              onDelete={() => handleDelete(tweet.id)}
             />
           ))
         )}

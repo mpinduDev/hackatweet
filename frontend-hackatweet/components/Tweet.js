@@ -4,7 +4,16 @@ import Avatar from './Avatar';
 import timeAgo from '../utils/timeAgo';
 import styles from '../styles/Tweet.module.css';
 
-function Tweet({ author, content, createdAt, likes, isMine }) {
+function Tweet({
+  author,
+  content,
+  createdAt,
+  likes,
+  isMine,
+  isLiked,
+  onLike,
+  onDelete,
+}) {
   return (
     <article className={styles.tweet}>
       <div className={styles.header}>
@@ -20,13 +29,25 @@ function Tweet({ author, content, createdAt, likes, isMine }) {
       <p className={styles.content}>{content}</p>
 
       <div className={styles.actions}>
-        <span className={styles.action}>
+        <button
+          type='button'
+          className={
+            isLiked ? `${styles.action} ${styles.liked}` : styles.action
+          }
+          onClick={onLike}
+          aria-label={isLiked ? 'Retirer le like' : 'Aimer'}
+        >
           <FontAwesomeIcon icon={faHeart} /> {likes.length}
-        </span>
+        </button>
         {isMine && (
-          <span className={styles.action}>
+          <button
+            type='button'
+            className={`${styles.action} ${styles.delete}`}
+            onClick={onDelete}
+            aria-label='Supprimer le tweet'
+          >
             <FontAwesomeIcon icon={faTrashCan} />
-          </span>
+          </button>
         )}
       </div>
     </article>

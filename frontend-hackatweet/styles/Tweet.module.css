@@ -31,7 +31,18 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
+  padding: 0;
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
   cursor: pointer;
+  transition: color 0.2s;
+}
+
+.action:hover,
+.liked {
+  color: var(--danger);
 }
 
 .firstname {
