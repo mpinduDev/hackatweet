@@ -3,6 +3,7 @@ import { faHeart, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import Avatar from './Avatar';
 import timeAgo from '../utils/timeAgo';
 import styles from '../styles/Tweet.module.css';
+import { splitHashtags } from '../utils/hashtags';
 
 function Tweet({
   author,
@@ -26,7 +27,17 @@ function Tweet({
         </p>
       </div>
 
-      <p className={styles.content}>{content}</p>
+      <p className={styles.content}>
+        {splitHashtags(content).map((part, index) =>
+          index % 2 === 1 ? (
+            <span key={index} className={styles.hashtag}>
+              {part}
+            </span>
+          ) : (
+            part
+          ),
+        )}
+      </p>
 
       <div className={styles.actions}>
         <button

@@ -4,6 +4,7 @@ import { faTwitter } from '@fortawesome/free-brands-svg-icons';
 import Avatar from './Avatar';
 import Tweet from './Tweet';
 import { useState } from 'react';
+import { getTrends } from '../utils/hashtags';
 
 const user = { firstname: 'John', username: 'JohnCena' };
 const initialTweets = [
@@ -69,6 +70,8 @@ function Home() {
   const handleDelete = (id) => {
     setTweets(tweets.filter((tweet) => tweet.id !== id));
   };
+
+  const trends = getTrends(tweets);
 
   return (
     <div className={styles.main}>
@@ -142,18 +145,18 @@ function Home() {
         <h2 className={styles.columnTitle}>Tendances</h2>
 
         <div className={styles.trendsBox}>
-          <div className={styles.trend}>
-            <p className={styles.trendName}>#hackatweet</p>
-            <p className={styles.trendCount}>2 Tweets</p>
-          </div>
-          <div className={styles.trend}>
-            <p className={styles.trendName}>#first</p>
-            <p className={styles.trendCount}>1 Tweet</p>
-          </div>
-          <div className={styles.trend}>
-            <p className={styles.trendName}>#cenation</p>
-            <p className={styles.trendCount}>1 Tweet</p>
-          </div>
+          {trends.length === 0 ? (
+            <p className={styles.empty}>Aucune tendance pour le moment.</p>
+          ) : (
+            trends.map((trend) => (
+              <div key={trend.hashtag} className={styles.trend}>
+                <p className={styles.trendName}>{trend.hashtag}</p>
+                <p className={styles.trendCount}>
+                  {trend.count} {trend.count > 1 ? 'Tweets' : 'Tweet'}
+                </p>
+              </div>
+            ))
+          )}
         </div>
       </aside>
     </div>
