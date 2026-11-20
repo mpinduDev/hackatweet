@@ -8,8 +8,14 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { getTrends, extractHashtags } from '../utils/hashtags';
 import { useSelector, useDispatch } from 'react-redux';
-import { addTweet, toggleLike, deleteTweet } from '../reducers/tweets';
+import {
+  setTweets,
+  addTweet,
+  updateTweet,
+  deleteTweet,
+} from '../reducers/tweets';
 import { logout } from '../reducers/user';
+import { API_URL } from '../utils/api';
 
 function Home({ hashtag }) {
   const router = useRouter();
@@ -27,27 +33,67 @@ function Home({ hashtag }) {
     if (!user) router.replace('/');
   }, [user, router]);
 
-  const handleTweet = () => {
+  useEffect(() => {
+    if (!user) return;
+
+    fetch(`${API_URL}/tweets`)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.result) dispatch(setTweets(data.tweets));
+      })
+      .catch((error) => console.error(error));
+  }, [user, dispatch]);
+
+  const handleTweet = async () => {
     const content = newTweet.trim();
     if (!content) return;
-    const tweet = {
-      id: Date.now(),
-      author: user,
-      content,
-      createdAt: Date.now(),
-      likes: [],
-    };
 
-    dispatch(addTweet(tweet));
-    setNewTweet('');
+    try {
+      const response = await fetch(`${API_URL}/tweets`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${user.token}`,
+        },
+        body: JSON.stringify({ content }),
+      });
+      const data = await response.json();
+
+      if (data.result) {
+        dispatch(addTweet(data.tweet));
+        setNewTweet('');
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  const handleLike = (id) => {
-    dispatch(toggleLike({ id, username: user.username }));
+  const handleLike = async (id) => {
+    try {
+      const response = await fetch(`${API_URL}/tweets/${id}/like`, {
+        method: 'PUT',
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
+      const data = await response.json();
+
+      if (data.result) dispatch(updateTweet(data.tweet));
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  const handleDelete = (id) => {
-    dispatch(deleteTweet(id));
+  const handleDelete = async (id) => {
+    try {
+      const response = await fetch(`${API_URL}/tweets/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
+      const data = await response.json();
+
+      if (data.result) dispatch(deleteTweet(id));
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleSearch = (e) => {

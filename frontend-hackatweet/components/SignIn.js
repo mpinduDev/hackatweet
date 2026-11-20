@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { login } from '../reducers/user';
+import { API_URL } from '../utils/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTwitter } from '@fortawesome/free-brands-svg-icons';
 import styles from '../styles/Auth.module.css';
@@ -12,7 +13,7 @@ function SignIn({ onSuccess, onSwitch }) {
 
   const dispatch = useDispatch();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const newErrors = {};
@@ -23,11 +24,26 @@ function SignIn({ onSuccess, onSwitch }) {
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
 
-    // Plus tard : fetch('http://localhost:3000/users/signin', { method: 'POST', ... })
-    dispatch(login({ firstname: username.trim(), username: username.trim() }));
-    setUsername('');
-    setPassword('');
-    onSuccess();
+    try {
+      const response = await fetch(`${API_URL}/users/signin`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      });
+      const data = await response.json();
+
+      if (!data.result) {
+        setErrors({ form: data.error });
+        return;
+      }
+
+      dispatch(login(data.user));
+      setUsername('');
+      setPassword('');
+      onSuccess();
+    } catch (error) {
+      setErrors({ form: 'Impossible de joindre le serveur.' });
+    }
   };
   const fieldClass = (name) =>
     errors[name] ? `${styles.field} ${styles.invalid}` : styles.field;
@@ -64,6 +80,7 @@ function SignIn({ onSuccess, onSwitch }) {
           </div>
           <p className={styles.error}>{errors.password}</p>
         </div>
+        <p className={styles.error}>{errors.form}</p>
         <button className={styles.submit} type='submit'>
           Se connecter
         </button>
