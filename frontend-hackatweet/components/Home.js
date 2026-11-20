@@ -21,6 +21,7 @@ function Home({ hashtag }) {
   const router = useRouter();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
+  const restored = useSelector((state) => state.user.restored);
   const tweets = useSelector((state) => state.tweets.value);
   const [newTweet, setNewTweet] = useState('');
   const [search, setSearch] = useState('');
@@ -30,8 +31,8 @@ function Home({ hashtag }) {
   }, [hashtag]);
 
   useEffect(() => {
-    if (!user) router.replace('/');
-  }, [user, router]);
+    if (restored && !user) router.replace('/');
+  }, [restored, user, router]);
 
   useEffect(() => {
     if (!user) return;
