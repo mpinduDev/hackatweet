@@ -3,6 +3,7 @@ import { faHeart, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import Avatar from './Avatar';
 import timeAgo from '../utils/timeAgo';
 import styles from '../styles/Tweet.module.css';
+import Link from 'next/link';
 import { splitHashtags } from '../utils/hashtags';
 
 function Tweet({
@@ -30,9 +31,9 @@ function Tweet({
       <p className={styles.content}>
         {splitHashtags(content).map((part, index) =>
           index % 2 === 1 ? (
-            <span key={index} className={styles.hashtag}>
-              {part}
-            </span>
+            <Link key={index} href={`/hashtag/${part.slice(1).toLowerCase()}`}>
+              <a className={styles.hashtag}>{part}</a>
+            </Link>
           ) : (
             part
           ),

@@ -136,6 +136,7 @@
   padding: 1rem 1.6rem;
   cursor: pointer;
   transition: background-color 0.2s;
+  display: block;
 }
 
 .trend:hover {
@@ -167,4 +168,24 @@
 
 .counterMax {
   color: var(--danger);
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.7rem 1.2rem;
+  background-color: var(--surface);
+  border: 1px solid transparent;
+  border-radius: 9999px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 1rem;
+  outline: none;
+}
+
+.searchInput:focus {
+  border-color: var(--blue);
+}
+
+.trendActive {
+  background-color: #263241;
 }

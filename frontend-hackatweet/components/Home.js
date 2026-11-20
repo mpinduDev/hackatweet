@@ -3,8 +3,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTwitter } from '@fortawesome/free-brands-svg-icons';
 import Avatar from './Avatar';
 import Tweet from './Tweet';
-import { useState } from 'react';
-import { getTrends } from '../utils/hashtags';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
+import { getTrends, extractHashtags } from '../utils/hashtags';
 
 const user = { firstname: 'John', username: 'JohnCena' };
 const initialTweets = [
@@ -31,14 +33,19 @@ const initialTweets = [
   },
 ];
 
-function Home() {
+function Home({ hashtag }) {
+  const router = useRouter();
   const [tweets, setTweets] = useState(initialTweets);
   const [newTweet, setNewTweet] = useState('');
+  const [search, setSearch] = useState('');
+
+  useEffect(() => {
+    setSearch(hashtag ? `#${hashtag}` : '');
+  }, [hashtag]);
 
   const handleTweet = () => {
     const content = newTweet.trim();
     if (!content) return;
-
     const tweet = {
       id: Date.now(),
       author: user,
@@ -71,14 +78,28 @@ function Home() {
     setTweets(tweets.filter((tweet) => tweet.id !== id));
   };
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const value = search.trim().replace(/^#/, '').toLowerCase();
+    if (!value) return;
+    router.push(`/hashtag/${value}`);
+  };
+
   const trends = getTrends(tweets);
+  const visibleTweets = hashtag
+    ? tweets.filter((tweet) =>
+        extractHashtags(tweet.content).includes(`#${hashtag.toLowerCase()}`),
+      )
+    : tweets;
 
   return (
     <div className={styles.main}>
       <aside className={styles.leftColumn}>
-        <span className={styles.logo}>
-          <FontAwesomeIcon icon={faTwitter} />
-        </span>
+        <Link href='/home'>
+          <a className={styles.logo} aria-label='Accueil'>
+            <FontAwesomeIcon icon={faTwitter} />
+          </a>
+        </Link>
 
         <div>
           <div className={styles.user}>
@@ -95,41 +116,58 @@ function Home() {
       </aside>
 
       <main className={styles.center}>
-        <h2 className={styles.columnTitle}>Accueil</h2>
+        <h2 className={styles.columnTitle}>
+          {hashtag ? 'Hashtag' : 'Accueil'}
+        </h2>
 
-        <div className={styles.newTweet}>
-          <textarea
-            className={styles.textarea}
-            placeholder='Quoi de neuf ?'
-            maxLength={280}
-            value={newTweet}
-            onChange={(e) => setNewTweet(e.target.value)}
-          />
-          <div className={styles.newTweetFooter}>
-            <span
-              className={
-                newTweet.length === 280
-                  ? `${styles.counter} ${styles.counterMax}`
-                  : styles.counter
-              }
-            >
-              {newTweet.length}/280
-            </span>
-            <button
-              type='button'
-              className={styles.tweetButton}
-              onClick={handleTweet}
-              disabled={!newTweet.trim()}
-            >
-              Tweeter
-            </button>
-          </div>
-        </div>
-
-        {tweets.length === 0 ? (
-          <p className={styles.empty}>Aucun tweet pour le moment.</p>
+        {hashtag ? (
+          <form className={styles.newTweet} onSubmit={handleSearch}>
+            <input
+              type='text'
+              className={styles.searchInput}
+              placeholder='Rechercher un hashtag'
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </form>
         ) : (
-          tweets.map((tweet) => (
+          <div className={styles.newTweet}>
+            <textarea
+              className={styles.textarea}
+              placeholder='Quoi de neuf ?'
+              maxLength={280}
+              value={newTweet}
+              onChange={(e) => setNewTweet(e.target.value)}
+            />
+            <div className={styles.newTweetFooter}>
+              <span
+                className={
+                  newTweet.length === 280
+                    ? `${styles.counter} ${styles.counterMax}`
+                    : styles.counter
+                }
+              >
+                {newTweet.length}/280
+              </span>
+              <button
+                type='button'
+                className={styles.tweetButton}
+                onClick={handleTweet}
+                disabled={!newTweet.trim()}
+              >
+                Tweeter
+              </button>
+            </div>
+          </div>
+        )}
+        {visibleTweets.length === 0 ? (
+          <p className={styles.empty}>
+            {hashtag
+              ? `Aucun tweet avec #${hashtag}.`
+              : 'Aucun tweet pour le moment.'}
+          </p>
+        ) : (
+          visibleTweets.map((tweet) => (
             <Tweet
               key={tweet.id}
               {...tweet}
@@ -149,12 +187,23 @@ function Home() {
             <p className={styles.empty}>Aucune tendance pour le moment.</p>
           ) : (
             trends.map((trend) => (
-              <div key={trend.hashtag} className={styles.trend}>
-                <p className={styles.trendName}>{trend.hashtag}</p>
-                <p className={styles.trendCount}>
-                  {trend.count} {trend.count > 1 ? 'Tweets' : 'Tweet'}
-                </p>
-              </div>
+              <Link
+                key={trend.hashtag}
+                href={`/hashtag/${trend.hashtag.slice(1)}`}
+              >
+                <a
+                  className={
+                    trend.hashtag === `#${hashtag}`
+                      ? `${styles.trend} ${styles.trendActive}`
+                      : styles.trend
+                  }
+                >
+                  <p className={styles.trendName}>{trend.hashtag}</p>
+                  <p className={styles.trendCount}>
+                    {trend.count} {trend.count > 1 ? 'Tweets' : 'Tweet'}
+                  </p>
+                </a>
+              </Link>
             ))
           )}
         </div>
