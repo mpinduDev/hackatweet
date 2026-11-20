@@ -9,31 +9,7 @@ import Link from 'next/link';
 import { getTrends, extractHashtags } from '../utils/hashtags';
 import { useSelector, useDispatch } from 'react-redux';
 import { addTweet, toggleLike, deleteTweet } from '../reducers/tweets';
-
-const user = { firstname: 'John', username: 'JohnCena' };
-const initialTweets = [
-  {
-    id: 3,
-    author: { firstname: 'John', username: 'JohnCena' },
-    content: "YOU CAN'T SEE ME ! #cenation",
-    createdAt: Date.now() - 10 * 1000,
-    likes: ['JohnCena'],
-  },
-  {
-    id: 2,
-    author: { firstname: 'Antoine', username: 'AntoineLeProf' },
-    content: 'Welcome to #hackatweet guys 😎',
-    createdAt: Date.now() - 5 * 60 * 60 * 1000,
-    likes: [],
-  },
-  {
-    id: 1,
-    author: { firstname: 'Antoine', username: 'AntoineLeProf' },
-    content: 'First! #hackatweet #first',
-    createdAt: Date.now() - 5 * 60 * 60 * 1000 - 60 * 1000,
-    likes: ['AntoineLeProf'],
-  },
-];
+import { logout } from '../reducers/user';
 
 function Home({ hashtag }) {
   const router = useRouter();
@@ -46,6 +22,10 @@ function Home({ hashtag }) {
   useEffect(() => {
     setSearch(hashtag ? `#${hashtag}` : '');
   }, [hashtag]);
+
+  useEffect(() => {
+    if (!user) router.replace('/');
+  }, [user, router]);
 
   const handleTweet = () => {
     const content = newTweet.trim();
@@ -83,7 +63,7 @@ function Home({ hashtag }) {
         extractHashtags(tweet.content).includes(`#${hashtag.toLowerCase()}`),
       )
     : tweets;
-
+  if (!user) return null;
   return (
     <div className={styles.main}>
       <aside className={styles.leftColumn}>
@@ -101,7 +81,11 @@ function Home({ hashtag }) {
               <p className={styles.username}>@{user.username}</p>
             </div>
           </div>
-          <button type='button' className={styles.logout}>
+          <button
+            type='button'
+            className={styles.logout}
+            onClick={() => dispatch(logout())}
+          >
             Se déconnecter
           </button>
         </div>

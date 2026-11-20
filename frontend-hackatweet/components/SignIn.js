@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { login } from '../reducers/user';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTwitter } from '@fortawesome/free-brands-svg-icons';
 import styles from '../styles/Auth.module.css';
@@ -7,6 +9,8 @@ function SignIn({ onSuccess, onSwitch }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
+
+  const dispatch = useDispatch();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -20,7 +24,7 @@ function SignIn({ onSuccess, onSwitch }) {
     if (Object.keys(newErrors).length > 0) return;
 
     // Plus tard : fetch('http://localhost:3000/users/signin', { method: 'POST', ... })
-    console.log('Sign in :', username);
+    dispatch(login({ firstname: username.trim(), username: username.trim() }));
     setUsername('');
     setPassword('');
     onSuccess();

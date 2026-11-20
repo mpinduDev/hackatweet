@@ -2,12 +2,20 @@ import styles from '../styles/Login.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTwitter } from '@fortawesome/free-brands-svg-icons';
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { useSelector } from 'react-redux';
 import SignUp from './SignUp';
 import SignIn from './SignIn';
 
 function Login() {
+  const router = useRouter();
+  const user = useSelector((state) => state.user.value);
   const [modal, setModal] = useState(null);
   const closeModal = () => setModal(null);
+
+  useEffect(() => {
+    if (user) router.push('/home');
+  }, [user, router]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
